@@ -5,9 +5,11 @@
 int main()
 {
   FILE *f;
-  char* file[10] = {"0","1","2","3","4","5","6","7","8","9"};
+  // char* file[10] = {"0","1","2","3","4","5","6","7","8","9"};
+  f = fopen("9", "w");
 
-  int t, x, j = 0, nx = 100, total_time = 400000, print_time = 40000, update_print_time = 40000;
+
+  int t, x, j = 0, nx = 100, total_time = 400000, print_time = 400000, update_print_time = 160000;
   float dt = 0.0025, M = 1.0, K = 1.0, dx = 1.0, dy = 1.0, A = 1.0, temp_1 = 0, temp_2 = 0, temp = 0;
 
   float* conc = (float*)malloc((nx+2)*sizeof(float));
@@ -21,10 +23,10 @@ int main()
 
   for(t = 0; t<=total_time; t++)
   {
-    if(t == print_time)
-    {
-      f = fopen(file[j], "w");
-    }
+    // if(t == print_time)
+    // {
+    //   f = fopen(file[j], "w");
+    // }
     conc[nx] = conc[0];
     conc[nx+1] = conc[1];
     temp_1 = conc[nx-1];
@@ -37,16 +39,17 @@ int main()
       temp_1 = temp;
       if(t == print_time)
       {
-        fprintf(f,"%f\n", conc[x]);
+        fprintf(f,"%f\t%f\n", (float)x*dx,conc[x]);
       }
     }
-    if(t == print_time)
-    {
-      print_time = print_time + update_print_time;
-      j++;
-      fclose(f);
-    }
+    // if(t == print_time)
+    // {
+    //   print_time = print_time + update_print_time;
+    //   j++;
+    //   fclose(f);
+    // }
   }
+  fclose(f);
   free(conc);
   return 0;
 }
