@@ -14,11 +14,11 @@ int main()
   f = fopen("conc", "w");
   fp = fopen("area", "w");
 
-  int t, x, y, nx = 1024, ny = 1024, total_time = 4000000, print_time = 40000, update_print_time = 40000;
+  int t = 0, x, y, j = 1, nx = 512, ny = 512, total_time = 80000, print_time = 40000, update_print_time = 40000;
   float dt = 0.0025, M = 1.0, K = 1.0, dx = 1.0, dy = 1.0, A = 1.0, temp_1 = 0, temp_2 = 0, temp = 0;
   float rad_0 = 10, c11 = 0, c12 = 1, c21 = 0, c22 = 1, x11 = 0, x12 = 0, x21 = 0, x22 = 0, c_x_y_;
 
-  fprintf(fp, "%f\t%f\n", 0.0,pow(rad_0,2));
+  fprintf(fp, "%f\t%f\n", dt*t, pow(rad_0,2));
 
   float** conc = (float**)malloc((nx+2)*sizeof(float*));
   float* c_xini_1 = (float*)malloc((ny+2)*sizeof(float));
@@ -39,7 +39,7 @@ int main()
 
   for(t = 0; t<=total_time; t++)
   {
-    c_x_y_ = 0;
+    c_x_y_ = 0.1;
     for(y = 0; y<ny+2; y++)
     {
       conc[nx][y] = conc[0][y];
@@ -85,33 +85,44 @@ int main()
 
         if(t == print_time)
         {
-          if(conc[x][y] > 0.1 && conc[x][y] < 0.5 && x < nx/2 && y == ny/2)
+          if(y == ny/2)
           {
-            float min = 0.5 - conc[x][y];
-            if(0.5-c11 > min)
-            c11 = conc[x][y];
-            x11 = x;
-          }
-          if(conc[x][y] > 0.5 && conc[x][y] < 1.0 && x < nx/2 && y == ny/2)
-          {
-            float min = conc[x][y] - 0.5;
-            if(c12-0.5 > min)
-            c12 = conc[x][y];
-            x12 =  x;
-          }
-          if(conc[x][y] > 0.1 && conc[x][y] < 0.5 && x > nx/2 && y == ny/2)
-          {
-            float min = 0.5 - conc[x][y];
-            if(0.5-c21 > min)
-            c21 = conc[x][y];
-            x21 = x;
-          }
-          if(conc[x][y] > 0.5 && conc[x][y] < 1.0 && x > nx/2 && y == ny/2)
-          {
-            float min = conc[x][y] - 0.5;
-            if(c22-0.5 > min)
-            c22 = conc[x][y];
-            x22 = x;
+            if(conc[x][y] > 0.1 && conc[x][y] < 0.5 && x < nx/2)
+            {
+              float min = 0.5 - conc[x][y];
+              if(0.5-c11 > min)
+              {
+                c11 = conc[x][y];
+                x11 = x;
+              }
+            }
+            if(conc[x][y] > 0.5 && conc[x][y] < 1.0 && x < nx/2)
+            {
+              float min = conc[x][y] - 0.5;
+              if(c12-0.5 > min)
+              {
+                c12 = conc[x][y];
+                x12 =  x;
+              }
+            }
+            if(conc[x][y] > 0.1 && conc[x][y] < 0.5 && x > nx/2)
+            {
+              float min = 0.5 - conc[x][y];
+              if(0.5-c21 > min)
+              {
+                c21 = conc[x][y];
+                x21 = x;
+              }
+            }
+            if(conc[x][y] > 0.5 && conc[x][y] < 1.0 && x > nx/2)
+            {
+              float min = conc[x][y] - 0.5;
+              if(c22-0.5 > min)
+              {
+                c22 = conc[x][y];
+                x22 = x;
+              }
+            }
           }
         }
         if(t == total_time)
@@ -129,6 +140,8 @@ int main()
       fprintf(fp, "%f\t%f\n", dt*t, pow(radius,2));
       print_time = print_time + update_print_time;
       c11 = 0; c12 = 1; c21 = 0; c22 = 1; x11 = 0; x12 = 0; x21 = 0; x22 = 0;
+      printf("%d\n", j);
+      j++;
     }
   }
   fclose(f);
